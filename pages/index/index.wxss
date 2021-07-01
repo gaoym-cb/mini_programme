@@ -1,0 +1,16 @@
+/**index.wxss**/
+.map-event-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  background: #ffff;
+  width: 100%;
+  height: 100%;
+  padding:10px 5px;
+}
+
+.map {
+  width: 100%;
+  height: 85vh;
+}
