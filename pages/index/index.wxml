@@ -1,4 +1,10 @@
-<!--index.wxml-->
-<view>
-Hello World
-</view>
+<!--pages/index/index.wxml-->
+<!--set a click button to navigate to the scanner page-->
+<button 
+  class="qr_navi" 
+  id="qr_navi"
+  type="primary"
+  bindtap="clickButton"
+>
+    QR Scan
+</button>

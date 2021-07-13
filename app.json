@@ -1,6 +1,7 @@
 {
   "pages":[
-    "pages/index/index"
+    "pages/index/index",
+    "pages/qr_scanner/qr_scanner"
   ],
   "window":{
     "backgroundTextStyle":"light",
