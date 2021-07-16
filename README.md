@@ -1,6 +1,9 @@
 # mini_programme
 This is a Bluetooth mini programme
 
+## 2021-7-16(yanghl)
+* the ble device finding and connecting period is not stable, the phone always cannot connect to the Nordic chip
+
 ## 2021-7-13(yanghl, add some code)
 * scan the qr code to get the device name, and find its device id for connection.
 * add the `figures` folder(an example qr code picture is in it).

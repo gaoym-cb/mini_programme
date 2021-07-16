@@ -1,141 +1,114 @@
-// pages/qr_scanner/qr_scanner.js
 Page({
+	data: {
+		deviceName: '',
+		deviceId: '',
+		serviceId: '',
+		characteristicId: '',
+		connected: false
+	},
 
-  /**
-   * 页面的初始数据
-   * device_name通过扫码获得，目前使用的设备名称为ShanghaiTech 示例二维码在figures文件夹下
-   */
-  data: {
-    deviceName:'',
-    deviceId:''
-  },
+	onLoad: function() {
+		let that=this;
+		//获取连接设备名
+		wx.scanCode({
+		  onlyFromCamera: true,
+		  scanType: 'qrCode',
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    let that=this;
-    // 调用qr
-    wx.scanCode({
-      onlyFromCamera: true,
-      scanType: 'qrCode',
-      success: function(res) {
-        that.setData({
-          deviceName: res.result
-        });
+		  success: function(res) {
+			  // 更新deviceName
+			  that.setData({
+				  deviceName: res.result
+			  });
+			  console.log(res.result)
+			  //已经获取了deviceName
 
-        //打开蓝牙
-        wx.openBluetoothAdapter({
-          success: function(res) {  },
-          fail: function(res) {
-            wx.showModal({
-              content: 'Please open Bluetooth and try again'
-            });
-          }
-        });
+			  //初始化蓝牙模块
+			  wx.openBluetoothAdapter({
+				success: function(res) {
+					//初始化蓝牙模块成功过后 搜索附近的外围设备
+					wx.startBluetoothDevicesDiscovery({
+					  allowDuplicatesKey: false,
+					  interval: 30,
+					  //在搜索到的附近设备中寻找待连接设备
+					  success:function(res) {
+						wx.onBluetoothDeviceFound(function(res) {
+							if(res.devices[0].name == that.data.deviceName) {
+								// 根据获取的deviceId 获取服务和特征值的Id
+								that.setData({
+									deviceId: res.devices[0].deviceId
+								});
+								// 连接设备
+								wx.createBLEConnection({
+								  deviceId: that.data.deviceId,
+								  success:function(res) { 
+									//连接成功
+									//获取服务与特征ID
+									wx.getBLEDeviceServices({
+									  deviceId: that.data.deviceId,
+									  success: function(res) {
+										  that.setData({
+											  serviceId: res.services[0].uuid
+										  })
+										  wx.getBLEDeviceCharacteristics({
+											deviceId: that.data.deviceId,
+											serviceId: that.data.serviceId,
+											success:function(res) {
+												that.setData({
+													characteristicId: res.characteristics[0].uuid
+												})
+												//停止发现
+												wx.stopBluetoothDevicesDiscovery({
+													success: (res) => {
+														wx.showModal({
+														  content: 'connected'
+														})
+														that.setData({
+															connected: true
+														})
+													 },
+												})
+											}
+										  })
+									  }
+									})
+								  }
+								});							
+							}
+						})
+					  }
+					})	
+				}
+			  })
 
-        // 上面的代码已经完成二维码扫描 开始扫描蓝牙设备
-        // 有一个问题 第一次调用会扫描不出来任何设备 ----> 还没找到解决方法
-        // 扫描三次以后能找到ShanghaiTech设备 ----> 还没找到解决方法
-        wx.startBluetoothDevicesDiscovery({
-          allowDuplicatesKey: false,
-          success : function(res) {
-            wx.getBluetoothDevices({
-              success: function(res) {
-                if (res.devices.length <= 0) {
-                  //没有搜索到任何设备--提示
-                  wx.showModal({
-                    content: 'No device found, please try later.'
-                  });
-                }
-                else {
-                  // 遍历搜索到的设备
-                  var deviceFound=false;
-                  for(var i=0; i < res.devices.length; i++) {
-                    // 打印搜索到的设备名
-                    console.log(res.devices[i].name);
-                    if (res.devices[i].name == that.data.deviceName) {
-                      //找到了
-                      deviceFound=true;
-                      // 刷新deviceId
-                      that.setData({
-                        deviceId: res.devices[i].deviceId
-                      });
-                      break;
-                    }
-                  }
+		  }
+		})
+	},
 
-                  if (deviceFound) {
-                    // 查找到设备 执行连接程序
-                    wx.createBLEConnection({
-                      deviceId: that.data.deviceId,
-                      success: function(res) {
-                        wx.showModal({
-                          content: 'connected'
-                        });
-                      }
-                    });
-                  }
-                  else wx.showModal({
-                    content: 'Failed to find device ' + that.data.deviceName
-                  });
-                }
-              },
-            })
-          }
-        });
-      }
-    })
-  },
+	onUnload:function() {
+		let that=this;
+		wx.closeBLEConnection({
+		  deviceId: that.data.deviceId,
+		})
+	},
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
+	transmission:function() {
+		let that=this;
+		let buffer = new ArrayBuffer(1)
+		let dataView = new DataView(buffer)
+		dataView.setUint8(0, 0)
 
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
-
-
+		wx.writeBLECharacteristicValue({
+		// 这里的 deviceId 需要在 getBluetoothDevices 或 onBluetoothDeviceFound 接口中获取
+		deviceId: that.data.deviceId,
+		// 这里的 serviceId 需要在 getBLEDeviceServices 接口中获取
+		serviceId: that.data.serviceId,
+		// 这里的 characteristicId 需要在 getBLEDeviceCharacteristics 接口中获取
+		characteristicId: that.data.characteristicId,
+		// 这里的value是ArrayBuffer类型
+		value: buffer,
+		success (res) {
+			console.log('writeBLECharacteristicValue success', res.errMsg)
+		}
+		})
+	}
 })
