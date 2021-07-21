@@ -1,1 +1,11 @@
-/* pages/index/index.wxss */
+button{
+    margin-top: 180rpx;
+    margin-bottom: 10rpx;
+  }
+  .button-sp-area{
+    margin: 0 auto;
+    width: auto;
+  }
+  .mini-btn{
+    margin-right: 10rpx;
+  }

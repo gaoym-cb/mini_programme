@@ -1,5 +1,6 @@
 <!--pages/index/index.wxml-->
 <!--set a click button to navigate to the scanner page-->
+<view class="container">
 <button 
   class="qr_navi" 
   id="qr_navi"
@@ -8,3 +9,5 @@
 >
     QR Scan
 </button>
+<button type="primary" class="button" loading="{{searching}}" bindtap="Search">{{searching?"搜索中...":"搜索蓝牙设备"}}</button>
+</view>

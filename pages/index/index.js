@@ -71,5 +71,51 @@ Page({
     wx.navigateTo({
       url: '/pages/qr_scanner/qr_scanner',
     })
+  },
+    /**
+   * 点击搜索蓝牙设备事件
+   */
+  Search:function(){
+    var that=this
+    if(!that.data.Search){
+      wx.openBluetoothAdapter({
+        success: function(res){
+          console.log(res)
+          wx.getBluetoothAdapterState({
+            success: function(res){
+              console.log(res)
+            }
+          })
+          wx.startBluetoothDevicesDiscovery({
+            allowDuplicatesKey: false,
+            success:function(res){
+              console.log(res)
+              that.setData({
+                searching:true,
+                deviceList:[]
+              })
+            }
+          })
+        },
+        fail:function(res){
+          console.log(res)
+          wx.showModal({
+            title:'提示',
+            content:'请检查手机蓝牙是否打开',
+            showCancel:false,
+            success:function(res){
+              that.setData({
+                searching:false
+              })
+            }
+          })
+        }
+      })
+    }
+    else{
+      wx.navigateTo({
+        url: '/pages/searching/searching',
+      })
+    }
   }
 })
