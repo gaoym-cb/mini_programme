@@ -1,6 +1,9 @@
 # mini_programme
 This is a Bluetooth mini programme
 
+## 2021-7-21(gaoym)
+* add searching button and a reminder to make sure open bluetooth.
+
 ## 2021-7-16(yanghl)
 * the ble device finding and connecting period is not stable, the phone always cannot connect to the Nordic chip
 
