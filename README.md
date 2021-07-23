@@ -1,6 +1,9 @@
 # mini_programme
 This is a Bluetooth mini programme
 
+## 2021-7-23(gaoym)
+* discover the nearby ble devices and connect.
+
 ## 2021-7-21(gaoym)
 * add searching button and a reminder to make sure open bluetooth.
 
