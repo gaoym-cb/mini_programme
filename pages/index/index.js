@@ -1,18 +1,20 @@
 // pages/index/index.js
+const app = getApp()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    searching: false,
+    devicesList: []
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (_options) {
-
+  onLoad: function (options) {
+    
   },
 
   /**
@@ -73,49 +75,61 @@ Page({
     })
   },
     /**
-   * 点击搜索蓝牙设备事件
+   * 点击搜索蓝牙设备按钮事件
    */
-  Search:function(){
-    var that=this
-    if(!that.data.Search){
-      wx.openBluetoothAdapter({
-        success: function(res){
+  Search: function () {
+    var that = this
+    if (!that.data.searching) {
+      wx.closeBluetoothAdapter({
+        complete: function (res) {
           console.log(res)
-          wx.getBluetoothAdapterState({
-            success: function(res){
+          wx.openBluetoothAdapter({
+            success: function (res) {
               console.log(res)
-            }
-          })
-          wx.startBluetoothDevicesDiscovery({
-            allowDuplicatesKey: false,
-            success:function(res){
-              console.log(res)
-              that.setData({
-                searching:true,
-                deviceList:[]
+              wx.getBluetoothAdapterState({
+                success: function (res) {
+                  console.log(res)
+                }
               })
-            }
-          })
-        },
-        fail:function(res){
-          console.log(res)
-          wx.showModal({
-            title:'提示',
-            content:'请检查手机蓝牙是否打开',
-            showCancel:false,
-            success:function(res){
-              that.setData({
-                searching:false
+              wx.startBluetoothDevicesDiscovery({
+                allowDuplicatesKey: false,
+                success: function (res) {
+                  console.log(res)
+                  wx.navigateTo({
+                    url: '/pages/searching/searching'})
+                  that.setData({
+                    searching: true,
+                    devicesList: []
+                  })
+                }
+              })
+            },
+            fail: function (res) {
+              console.log(res)
+              wx.showModal({
+                title: '提示',
+                content: '请检查手机蓝牙是否打开',
+                showCancel: false,
+                success: function (res) {
+                  that.setData({
+                    searching: false
+                  })
+                }
               })
             }
           })
         }
       })
     }
-    else{
-      wx.navigateTo({
-        url: '/pages/searching/searching',
+    else {
+      wx.stopBluetoothDevicesDiscovery({
+        success: function (res) {
+          console.log(res)
+          that.setData({
+            searching: false
+          })
+        }
       })
     }
-  }
+  },
 })

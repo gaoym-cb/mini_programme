@@ -2,7 +2,8 @@
   "pages":[
     "pages/index/index",
     "pages/qr_scanner/qr_scanner",
-    "pages/searching/searching"
+    "pages/searching/searching",
+    "pages/device/device"
   ],
   "window":{
     "backgroundTextStyle":"light",
