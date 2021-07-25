@@ -3,7 +3,7 @@
     "pages/index/index",
     "pages/qr_scanner/qr_scanner",
     "pages/searching/searching",
-    "pages/device/device"
+    "pages/send/send"
   ],
   "window":{
     "backgroundTextStyle":"light",
