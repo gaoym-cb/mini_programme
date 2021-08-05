@@ -1,7 +1,12 @@
 # mini_programme
 This is a Bluetooth mini programme
 
+## 2021-8-5（yanghl）
+
+* modify the `qrcode` page, now it can create stable connection
+
 ## 2021-7-23(gaoym)
+
 * discover the nearby ble devices and connect.
 
 ## 2021-7-21(gaoym)

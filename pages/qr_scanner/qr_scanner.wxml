@@ -1,9 +1,2 @@
 <!--pages/qr_scanner/qr_scanner.wxml-->
-<button 
-  class="qr_navi" 
-  id="qr_navi"
-  type="primary"
-  bindtap="transmission"
->
-    Send
-</button>
+
